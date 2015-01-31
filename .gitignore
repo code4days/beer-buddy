@@ -1,3 +1,4 @@
-
+.idea/
 beer-buddy-web/target
 beer-buddy-web/database
+**/*.iml
