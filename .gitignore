@@ -1,4 +1,9 @@
 .idea/
+
+beer-buddy-core/target
+
 beer-buddy-web/target
+beer-buddy-web/database
+
 beer-buddy-web/database
 **/*.iml
