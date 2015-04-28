@@ -17,7 +17,11 @@
           <!-- ngIf: menu.currentPage -->
           <div style="line-height: 28px;" ng-bind="menu.currentPage || 'Beer Buddy'" class="ng-binding">Beer Buddy</div>
           <div flex=""></div>
-		
+		  <a class="md-button md-default-theme hide"
+	          		ui-sref="home" 
+	          		style="position: relative; padding-left: 20px; touch-action: pan-y; -webkit-user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);" tabindex="0">
+	          		<span class="ng-scope">Home</span>
+	      </a>
 		  <div ng-show="user.isLoggedIn">
 		  		
 		  	  <a class="md-button md-default-theme hide" ui-sref="profile" style="position: relative; padding-left: 30px; touch-action: pan-y; -webkit-user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);" tabindex="0">

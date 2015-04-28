@@ -7,3 +7,4 @@ beer-buddy-web/database
 
 beer-buddy-web/database
 **/*.iml
+beer-buddy-web/.classpath
