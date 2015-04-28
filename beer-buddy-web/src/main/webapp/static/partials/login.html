@@ -88,7 +88,10 @@
 							</md-input-container>
 							<md-input-container>
 							<div>
-								<md-text-float label="Password" type="password" ng-model="newUser.password" required name="password"></md-text-float>
+								<md-input-group class="md-default-theme">
+        							<label for="">password </label>
+     									<md-input label="Password" type="password" ng-model="newUser.password" required name="password" pattern=".{8,}" required title="8 characters minimum"></md-input>
+     							</md-input-group>
 							</div>
 							</md-input-container>
 						<md-button ng-click="submitSignup();" ng-disabled="signupInProgress" md-theme="green" class="md-raised md-primary">Sign up</md-button>
