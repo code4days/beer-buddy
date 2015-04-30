@@ -13,7 +13,12 @@
 		    </md-tab>
 		  </md-tabs>
 	
-	
+		<section ng-show="showSearch">
+			  <input label="search" ng-model="searchText" />
+	          <md-button class="md-raised" ng-click="selectType(tabs[2])">Search</md-button>
+	          
+		</section>
+		
 		<section ng-show="showBeer">
 			<!-- <md-subheader class="md-primary">Beer</md-subheader> -->
 			<md-list>
@@ -50,6 +55,7 @@
 		        </md-item-content>
 		      </md-item>
 		    </md-list>
+		   
 		    <md-button ng-click="loadMore();" ng-show="hasMore();"
 			        		class="md-fab md-primary face" aria-label="Load More">
 			    <md-icon icon="/static/bower_components/material-design-icons/navigation/svg/production/ic_expand_more_24px.svg" >
@@ -109,6 +115,7 @@
 	            </md-icon>
 			 </md-button>
 		</section>
+		
 		      
 	
 	

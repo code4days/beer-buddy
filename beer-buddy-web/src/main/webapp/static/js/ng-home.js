@@ -1,7 +1,7 @@
 angular.module('beer-buddy-app')
 
-.controller('HomeController', [ '$scope', '$rootScope', 'BeerService', 'UserService', 
-	function($scope, $rootScope, BeerService, UserService) {
+.controller('HomeController', [ '$scope', '$rootScope', 'BeerService', 'UserService', 'SearchService',
+	function($scope, $rootScope, BeerService, UserService, SearchService) {
 	
 		$rootScope.user = $rootScope.user || beerBuddy.getUser() || {};
 	
@@ -12,6 +12,7 @@ angular.module('beer-buddy-app')
 		$scope.page = -1;
 		$scope.totalPages = 1;
 		$scope.lastPage = false;
+		$scope.searchText = "Lakeport Ice";
 		
 		$scope.hasMore = function() {
 			return ! $scope.lastPage; 
@@ -26,11 +27,14 @@ angular.module('beer-buddy-app')
 				$scope.lastPage = page.last;
 			});
 		};
+		
+		
 	
 		//load the first page...
 		$scope.nextPage();
 		$scope.showBeer = true;
 		$scope.showUsersBeer = false;
+		$scope.showSearch = false;
 		
 		var tabs = [
             { title: 'All', action: 'show-all-beers' }
@@ -39,6 +43,7 @@ angular.module('beer-buddy-app')
 			tabs.push({ title: 'Favorites', action: 'show-favorites' });
 		}
 		tabs.push({ title: 'Drinking Buddies', action: 'show-all-people' });
+		tabs.push({ title: 'Search', action: 'show-search'});
 
 		var types = [];
 		BeerService.getTypes(function(ts){
@@ -48,14 +53,44 @@ angular.module('beer-buddy-app')
 			});
 		});
 		
+		
+//		$scope.searchText = "test";
+//		$scope.displaySearchResults = function() {
+//			
+//			$scope.searchPage(searchText);
+//			var names = [];
+//			SearchService.getNames(function(ns){
+//				angular.forEach(ns, function(name) {
+//					$scope.tabs.push({title: 'Search Results'});
+//					names.push(name);
+//				});
+//			});
+//			$scope.showBeer = true;
+//			$scope.showUsersBeer = false;
+//		}
+		
+		$scope.searchResults = function() {
+			 $scope.showSearch = true;
+			 //$scope.searchText = "Lakeport Ice";
+			 var searchName = $scope.searchText;
+			 console.log(searchName);
+			 $scope.searchPage(searchName);
+			 $scope.showBeer = true;
+			 $scope.showUsersBeer = false;
+			 $scope.showPeople = false;
+		}
+		
           $scope.tabs = tabs;
           $scope.selectedIndex = 0;
           $scope.selectType = selectType;
           $scope.deselectType = deselectType;
+          
           $scope.addTab = function (title, view) {
             view = view || title + " Content View";
             tabs.push({ title: title, content: view, disabled: false});
           };
+          
+          
           $scope.removeTab = function (tab) {
             for (var j = 0; j < tabs.length; j++) {
               if (tab.title == tabs[j].title) {
@@ -64,6 +99,8 @@ angular.module('beer-buddy-app')
               }
             }
           };
+          
+          
 		 function selectType(tab) {
 			 $scope.page = -1;
 			 $scope.beers = [];
@@ -76,6 +113,7 @@ angular.module('beer-buddy-app')
 				$scope.showBeer = true;
 				$scope.showUsersBeer = false;
 				$scope.showPeople = false;
+				$scope.showSearch = false;
 			 } else {
 				 if( tab.action && tab.action === 'show-all-people' ) {
 					 $scope.nextPageOfPeople();
@@ -85,6 +123,7 @@ angular.module('beer-buddy-app')
 					 $scope.showBeer = false;
 					 $scope.showUsersBeer = false;
 					 $scope.showPeople = true;
+					 $scope.showSearch = false;
 				 } else if( tab.action && tab.action === 'show-favorites' ) {
 					 $scope.nextPageOfUsersBeers();
 					 $scope.loadMore = function() {
@@ -93,7 +132,19 @@ angular.module('beer-buddy-app')
 					 $scope.showBeer = false;
 					 $scope.showUsersBeer = true;
 					 $scope.showPeople = false;
-				 } else {
+					 $scope.showSearch = false;
+				 } else if( tab.action && tab.action === 'show-search') {
+					 //search button calls this tab
+					 $scope.showSearch = true;
+					 //$scope.searchText = "Lakeport Ice";
+					 var searchName = $scope.searchText;
+					 console.log(searchName);
+					 $scope.searchPage(searchName);
+					 $scope.showBeer = true;
+					 $scope.showUsersBeer = false;
+					 $scope.showPeople = false;
+				 } 
+				 else {
 					 $scope.nextPage();
 					 $scope.loadMore = function() {
 						 $scope.nextPage();
@@ -101,9 +152,11 @@ angular.module('beer-buddy-app')
 					 $scope.showBeer = true;
 					 $scope.showUsersBeer = false;
 					 $scope.showPeople = false;
+					 $scope.showSearch = false;
 				 }
 			 }
 		}
+		 
 		function deselectType(tab) {
 			$scope.greeting = 'Hello ' + tab.title + '!';
 		}
@@ -119,6 +172,18 @@ angular.module('beer-buddy-app')
 		$scope.loadMore = function() {
 			$scope.nextPage();
 		};
+		
+		//$scope.beerSearch = $scope.beerSearch || [];
+		$scope.searchPage = function(name) {
+			SearchService.getName(name, $scope.page + 1, function(page) {
+				//$scope.searchPage = angular.copy(page.content, $scope.searchPage);
+				$scope.beers = angular.copy(page.content, $scope.beers);
+				$scope.page = page.number;
+				$scope.totalPages = page.totalPages;
+				$scope.lastPage = page.last;
+			});
+		};
+		
 		
 		$scope.people = $scope.people || [];
 		$scope.nextPageOfPeople = function() {
@@ -174,6 +239,32 @@ angular.module('beer-buddy-app')
 		}
 		, getType : function(type, page, callback) {
 			return Types.get({type: type, page: page}, callback);
+		}
+		
+	};
+	
+}])
+
+.service('SearchService', [ '$resource', function($resource) {
+	
+	var baseUrl = "/beers/";
+	
+	//var BeerApi = $resource(baseUrl + '/:id');
+	
+	var Names = $resource(baseUrl + '/names/:name');
+	
+	return {
+		getPage : function(page, callback) {
+			return BeerApi.get({page: page}, callback);
+		}	
+//		, get : function(id) {
+//			return BeerApi.get({id : id});
+//		}
+		, getNames : function(callback) {
+			return Names.query(callback);
+		}
+		, getName : function(name, page, callback) {
+			return Names.get({name: name, page: page}, callback);
 		}
 		
 	};

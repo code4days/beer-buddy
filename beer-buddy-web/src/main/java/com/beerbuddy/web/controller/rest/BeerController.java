@@ -91,7 +91,7 @@ public class BeerController implements BeerMapper {
 	}
 	
 	@Description("Returns a beer by name")
-	@RequestMapping(value={"", "/{name}"}, method=GET)
+	@RequestMapping(value={"/names/{name}"}, method=GET)
 	public Page<Beer> getBeersOfName(
 			@PathVariable String name,
 			@RequestParam(defaultValue="0", required=false) int page,
