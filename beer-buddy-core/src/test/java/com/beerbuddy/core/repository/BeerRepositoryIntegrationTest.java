@@ -96,6 +96,26 @@ public class BeerRepositoryIntegrationTest {
 	}
 	
 	
+	@Test
+	public void findByName() {
+		String name = "My First Beer";
+		Pageable pageRequest = new PageRequest(0, 1);
+		
+		Page<Beer> page = repository.findByName(name, pageRequest);
+		
+		assertThat(page.getNumber(), is(equalTo(0)));
+		assertThat(page.getNumberOfElements(), is(equalTo(1)));
+		assertThat(page.getSize(), is(equalTo(1)));
+		
+		List<Beer> content = page.getContent();
+		assertThat(content, is(not(nullValue())));
+		assertThat(content.size(), is(equalTo(1)));
+		Beer beer = content.get(0);
+		assertThat(beer, is(not(nullValue())));
+		assertThat(beer.getName(), is(equalTo(name)));
+		
+	}
+	
 	@Ignore
 	@Test
 	public void findByType_badTestThatNeedsToBeFixed() {

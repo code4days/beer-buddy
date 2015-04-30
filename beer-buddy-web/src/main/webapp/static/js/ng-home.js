@@ -12,7 +12,8 @@ angular.module('beer-buddy-app')
 		$scope.page = -1;
 		$scope.totalPages = 1;
 		$scope.lastPage = false;
-		$scope.searchText = "Lakeport Ice";
+		//$scope.searchText = "Lakeport Ice";
+		$scope.searchText = "";
 		
 		$scope.hasMore = function() {
 			return ! $scope.lastPage; 
@@ -139,7 +140,9 @@ angular.module('beer-buddy-app')
 					 //$scope.searchText = "Lakeport Ice";
 					 var searchName = $scope.searchText;
 					 console.log(searchName);
-					 $scope.searchPage(searchName);
+					 if(searchName != "") {
+						 $scope.searchPage(searchName);
+					 }
 					 $scope.showBeer = true;
 					 $scope.showUsersBeer = false;
 					 $scope.showPeople = false;
