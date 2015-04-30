@@ -44,6 +44,14 @@ public class UserController implements BeerMapper {
 	@RequestMapping(method=RequestMethod.POST)
 	public ResponseEntity<?> create(@RequestBody NewUserRequest request) {
 		try {
+			if (request.getPassword().trim().length() < 8)//checks to make sure password is at least 8 characters long
+			{
+				Map<String, String> error = ImmutableMap.
+						of("error", "The password is too short", 
+							"message", "The password must be at least 8 characters long.");
+				return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+			}
+			
 			User user = userService.createUser(request.getUsername(), request.getPassword());
 			UserProfile profile = new UserProfile();
 			profile.setEmail(request.getEmail());
