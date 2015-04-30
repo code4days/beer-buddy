@@ -64,4 +64,41 @@ public class BeerController implements BeerMapper {
 //				.collect(Collectors.toList());
 //		return new PageImpl<BeerDTO>(dtos);
 	}
+	
+	@Description("Returns a list of all of the beers for a particular brewer")
+	@RequestMapping(value={"/brewers" }, method=GET)
+	public List<String> getBrewers() {
+		return beerRepository.findBrewers();
+	}
+	
+	@Description("Returns a list of brewers")
+	@RequestMapping(value={"/brewers/{brewer}"}, method=GET)
+	public Page<Beer> getBeersOfBrewer(
+			@PathVariable String brewer,
+			@RequestParam(defaultValue="0", required=false) int page,
+			@RequestParam(defaultValue="10", required=false) int size) {
+		Order order = new Order(Direction.ASC, "name");
+		Sort sort = new Sort(order);
+		Pageable pageable = new PageRequest(page, size, sort);
+		return beerRepository.findByBrewer(brewer, pageable);
+	}
+	
+	
+	@Description("Returns a list of all of the beers for a particular name")
+	@RequestMapping(value={"/names" }, method=GET)
+	public List<String> getNames() {
+		return beerRepository.findNames();
+	}
+	
+	@Description("Returns a beer by name")
+	@RequestMapping(value={"", "/{name}"}, method=GET)
+	public Page<Beer> getBeersOfName(
+			@PathVariable String name,
+			@RequestParam(defaultValue="0", required=false) int page,
+			@RequestParam(defaultValue="10", required=false) int size) {
+		Order order = new Order(Direction.ASC, "name");
+		Sort sort = new Sort(order);
+		Pageable pageable = new PageRequest(page, size, sort);
+		return beerRepository.findByName(name, pageable);
+	}
 }

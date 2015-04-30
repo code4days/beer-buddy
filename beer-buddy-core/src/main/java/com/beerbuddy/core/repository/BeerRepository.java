@@ -15,4 +15,14 @@ public interface BeerRepository extends JpaRepository<Beer, Long> {
 	public List<String> findTypes();
 	
 	public Page<Beer> findByType(String type, Pageable page);
+	
+	@Query("select distinct (b.brewer) from Beer b order by b.brewer asc")
+	public List<String> findBrewers();
+	
+	public Page<Beer> findByBrewer(String brewer, Pageable page);
+	
+	@Query("select distinct (b.name) from Beer b order by b.name asc")
+	public List<String> findNames();
+	
+	public Page<Beer> findByName(String name, Pageable page);
 }
