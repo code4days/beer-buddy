@@ -41,6 +41,15 @@ public class LoginController {
 		//clear context to be safe
 		SecurityContextHolder.clearContext();
 		
+		if (request.getPassword().trim().length() < 8)//checks to make sure password is at least 8 characters long
+		{
+			log.error("Too Short Password");
+			Map<String, String> error = ImmutableMap.
+					of("error", "The password is too short", 
+						"message", "The password must be at least 8 characters long.");
+			return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+		}
+		
 		Authentication auth = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
 		try {
 			auth = beerBuddyAuthenticationManager.authenticate(auth);
